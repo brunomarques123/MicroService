@@ -1,3 +1,5 @@
+using GeekShopping.Web.Services;
+using GeekShopping.Web.Services.IServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -20,13 +22,17 @@ namespace GeekShopping.Web
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // Este método é chamado pelo tempo de execução. Use este método para adicionar serviços ao contêiner.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient<IProductService, ProductService>(
+                c => c.BaseAddress=new Uri(Configuration["ServiceUrls:ProductAPI"]));
+
             services.AddControllersWithViews();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+        // Este método é chamado pelo tempo de execução. Use este método para configurar o pipeline de solicitação HTTP.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -36,7 +42,8 @@ namespace GeekShopping.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                 
+                //O valor HSTS padrão é 30 dias.Você pode querer mudar isso para cenários de produção, veja https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
